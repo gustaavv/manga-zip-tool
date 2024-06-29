@@ -1,18 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Manga Zip Tool</title>
 </head>
+
 <body>
-    <h1>Zip File Manager</h1>
+    <h1>Manga Zip Tool</h1>
     <input type="file" id="zipFileInput" accept=".zip" />
-    <button id="processButton">Process Zip File</button>
-    <hr/>
+    <button id="processButton">Process Zip File</button><br/>
+    <span> deleteCount: <span id="deleteCount">0</span></span>; <span>delete Image Lists: [<span id="deleteList">
+        </span>]</span>
+
+
+    <hr />
+    <div id="msg1" style="display: none; font-size: large;">Processing zip file</div>
     <div id="imageList"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
