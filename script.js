@@ -96,6 +96,11 @@ function displayImages() {
 function processZipFile() {
     if (zipFile == null) {
         alert('no zip file')
+        return
+    }
+    choice = confirm('Download processed zip file?')
+    if (!choice) {
+        return
     }
     const checkedImages = document.querySelectorAll('.imageThumbnail');
     const newZip = new JSZip();
