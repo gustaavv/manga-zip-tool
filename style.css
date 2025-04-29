@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: sans-serif;
+  width: 90rem;
+  margin: 0 auto;
+}
+
+.title {
+  color: red;
+  font-size: 3.2rem;
+  text-align: center;
+  margin: 3.2rem 0;
+}
+
+.instruction {
+  font-size: 1.8rem;
+  line-height: 1.4;
+  padding-bottom: 1.6rem;
+  margin-bottom: 1.6rem;
+  border-bottom: black solid 1px;
+}
+
+.instruction ol {
+  margin-left: 1.8rem;
+}
+
+.operation {
+  font-size: 1.8rem;
+  margin-bottom: 2.4rem;
+  padding-bottom: 1.6rem;
+  border-bottom: black solid 1px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 1.2rem;
+  row-gap: 1.2rem;
+  align-items: center;
+  justify-items: center;
+}
+
+#zipFileInput {
+  font-size: 1.8rem;
+}
+
+.btn {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: greenyellow;
+  border: orangered solid 3px;
+  border-radius: 9px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  box-shadow: 0 1rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.statistics {
+  font-size: 2.4rem;
+  margin-bottom: 2.4rem;
+  padding-bottom: 1.6rem;
+  border-bottom: black solid 1px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.statistics.hidden {
+  display: none;
+}
+
+.image-list {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 1.2rem;
+  row-gap: 2.4rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.thumbnail {
+  border: 3px solid black;
+  position: relative;
+}
+
+.thumbnail:hover {
+  box-shadow: 0 0 3rem rgba(0, 0, 0, 0.2);
+}
+
+.thumbnail.deleted {
+  border: 3px solid red;
+  box-shadow: 0 0 2rem rgba(255, 0, 0, 0.3);
+}
+
+.thumbnail.deleted::after {
+  content: "deleted";
+  text-transform: uppercase;
+  font-size: 3.2rem;
+  color: red;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%) rotate(45deg);
+}
+
+.thumbnail img {
+  max-width: 20rem;
+  max-height: 20rem;
+  object-fit: cover;
+}
+
+.loading-msg {
+  font-size: 2.4rem;
+  padding: 1.6rem 3.2rem;
+  margin: 0 auto;
+
+  text-align: center;
+  /* display: inline-block; */
+  display: none;
+  border: 2px solid blue;
+}

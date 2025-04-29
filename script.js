@@ -1,125 +1,153 @@
-document.getElementById('zipFileInput').addEventListener('change', handleFileSelect);
-document.getElementById('processButton').addEventListener('click', processZipFile);
+"use strict";
+
+const zipFileInputEl = document.getElementById("zipFileInput");
+const enableRenamingCheckboxEl = document.getElementById(
+  "enableRenamingCheckbox"
+);
+const processBtnEl = document.getElementById("processButton");
+
+const statisticsEl = document.querySelector(".statistics");
+const totalCountEl = document.querySelector(".total-count");
+const deleteCountEl = document.querySelector(".delete-count");
+const finalCountEl = document.querySelector(".final-count");
+
+const imageListEl = document.querySelector(".image-list");
 
 let zipFile;
 let zip;
-let imageList = document.getElementById('imageList');
-var deleteCount = 0;
-var deleteList = [];
+const imageObjList = [];
+let deleteCount = 0;
 
-function initVariables() {
-    imageList.innerHTML = '';
-    deleteCount = 0;
-    deleteList = [];
+function setOperationDisabled(b) {
+  zipFileInputEl.disabled = b;
+  processBtnEl.disabled = b;
+  enableRenamingCheckboxEl.disabled = b;
 }
 
-function showDeleteInfo() {
-    document.getElementById("deleteCount").innerText = deleteCount;
-
-    document.getElementById("deleteList").innerText = deleteList.join(", ");
+function init() {
+  imageObjList.splice(0);
+  deleteCount = 0;
+  imageListEl.innerHTML = "";
 }
 
 function handleFileSelect(event) {
-    zipFile = event.target.files[0];
-    if (zipFile) {
-        document.getElementById('msg1').style.display = 'block';
+  zipFile = event.target.files[0];
+  if (!zipFile) {
+    return;
+  }
+  setOperationDisabled(true);
+  init();
+  const reader = new FileReader();
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            JSZip.loadAsync(e.target.result).then(function (zipContent) {
-                zip = zipContent;
-                displayImages();
-            });
-        };
-        reader.readAsArrayBuffer(zipFile);
-    }
-}
-
-function displayImages() {
-    const promises = [];
-    initVariables()
-    const row = document.createElement('div');
-    row.style.display = 'flex';
-    row.style.flexWrap = 'wrap';
-
+  reader.onload = async function (e) {
+    zip = await JSZip.loadAsync(e.target.result);
     const filenames = Object.keys(zip.files);
     filenames.sort();
 
-    filenames.forEach(function (filename) {
-        const thumbnail = document.createElement('div');
-        thumbnail.style.textAlign = 'center';
-        thumbnail.style.margin = '10px'; // Add some margin around each thumbnail
-
-        const img = document.createElement('img');
-        img.style.maxWidth = '200px'; // Limit maximum width for smaller screens
-        img.style.maxHeight = '200px'; // Limit maximum height for smaller screens
-        img.style.objectFit = 'cover';
-        img.style.border = '2px solid black';
-        img.setAttribute('data-filename', filename);
-        img.className = 'imageThumbnail';
-        img.title = filename;
-
-        thumbnail.appendChild(img);
-        row.appendChild(thumbnail);
-
-        const promise = zip.files[filename].async('blob').then(function (blob) {
-            const url = URL.createObjectURL(blob);
-            img.src = url;
-            // Click event listener to toggle 'checked' class
-            img.addEventListener('click', function () {
-                if (img.classList.contains('checked')) {
-                    img.classList.remove('checked');
-                    img.style.border = '2px solid black';
-                    deleteCount--;
-                    deleteList = deleteList.filter(e => e !== filename).sort();
-                } else {
-                    img.classList.add('checked');
-                    img.style.border = '4px solid red';
-                    deleteCount++;
-                    deleteList.push(filename);
-                    deleteList.sort();
-                }
-                showDeleteInfo();
-            });
-        });
-        promises.push(promise);
+    filenames.forEach(f => {
+      const obj = {
+        filename: f,
+        deleted: false,
+      };
+      imageObjList.push(obj);
     });
+    renderThumbnails();
+    renderStatistics();
+    setOperationDisabled(false);
+  };
 
-
-    Promise.all(promises).then(() => {
-        imageList.appendChild(row);
-        document.getElementById('msg1').style.display = 'none';
-    });
-
+  reader.readAsArrayBuffer(zipFile);
 }
 
-function processZipFile() {
-    if (zipFile == null) {
-        alert('no zip file')
-        return
-    }
-    choice = confirm('Download processed zip file?')
-    if (!choice) {
-        return
-    }
-    const checkedImages = document.querySelectorAll('.imageThumbnail');
-    const newZip = new JSZip();
-    const promises = [];
+function renderStatistics() {
+  const total = Object.keys(zip.files).length;
+  totalCountEl.textContent = total;
+  deleteCountEl.textContent = deleteCount;
+  finalCountEl.textContent = total - deleteCount;
 
-    checkedImages.forEach(function (img) {
-        const filename = img.getAttribute('data-filename');
-        if (!img.classList.contains('checked')) {
-            const promise = zip.files[filename].async('blob').then(function (blob) {
-                newZip.file(filename, blob);
-            });
-            promises.push(promise);
-        }
-    });
-
-    Promise.all(promises).then(() => {
-        newZip.generateAsync({ type: 'blob' }).then(content => {
-            saveAs(content, zipFile.name);
-        });
-    });
+  statisticsEl.classList.remove("hidden");
 }
 
+async function renderThumbnails() {
+  const tasks = imageObjList.map(async function ({ filename, deleted }) {
+    const blob = await zip.files[filename].async("blob");
+    const url = URL.createObjectURL(blob);
+    const html = `
+      <div 
+          class="thumbnail ${deleted ? "deleted" : ""}"
+          title="${filename}"
+          data-filename="${filename}"
+      >
+        <img src="${url}" />
+      </div>
+    `;
+    return html;
+  });
+
+  const html = (await Promise.all(tasks)).join("");
+  imageListEl.innerHTML = html;
+}
+
+async function handleProcessZipFile() {
+  if (!zipFile) {
+    return alert("Choose a zip file first.");
+  }
+
+  const choice = confirm("Download the processed zip file?");
+  if (!choice) {
+    return;
+  }
+  setOperationDisabled(true);
+  const newZip = new JSZip();
+
+  const renaming = enableRenamingCheckboxEl.checked;
+  const finalCountDigits = (Object.keys(zip.files).length - deleteCount + "")
+    .length;
+
+  const tasks = imageObjList
+    .filter(o => !o.deleted)
+    .map(async ({ filename }, i) => {
+      const blob = zip.files[filename].async("blob");
+      // TODO: when renaming enabled, change the filename
+      if (renaming) {
+        const ext = filename.split(".").at(-1);
+        const newFilename = `${(i + 1 + "").padStart(
+          finalCountDigits,
+          "0"
+        )}.${ext}`;
+        newZip.file(newFilename, blob);
+      } else {
+        newZip.file(filename, blob);
+      }
+    });
+
+  await Promise.all(tasks);
+
+  const content = await newZip.generateAsync({ type: "blob" });
+  saveAs(content, zipFile.name);
+  setOperationDisabled(false);
+}
+
+function handleClickImageList(e) {
+  const thumbnailEl = e.target.closest(".thumbnail");
+  if (!thumbnailEl) {
+    return;
+  }
+
+  const imgObj = imageObjList.find(
+    o => o.filename === thumbnailEl.dataset.filename
+  );
+  imgObj.deleted = !imgObj.deleted;
+  thumbnailEl.classList.toggle("deleted");
+
+  if (imgObj.deleted) {
+    deleteCount++;
+  } else {
+    deleteCount--;
+  }
+  renderStatistics();
+}
+
+zipFileInputEl.addEventListener("change", handleFileSelect);
+processBtnEl.addEventListener("click", handleProcessZipFile);
+imageListEl.addEventListener("click", handleClickImageList);

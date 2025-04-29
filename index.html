@@ -1,33 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
     <title>Manga Zip Tool</title>
-</head>
+    <link rel="stylesheet" href="style.css" />
 
-<body>
-    <h1>Manga Zip Tool</h1>
-    <p style="font-size:large">
-        How to use? <br />
-    <ol>
-        <li>choose a manga archive.</li>
-        <li>click on pages you want to delete, and they will become red in border.</li>
-        <li>click 'Process Zip File', you will get a new zip with only the pages you want.</li>
-    </ol>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+      integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"
+      integrity="sha512-Qlv6VSKh1gDKGoJbnyA5RMXYcvnpIqhO++MhIM2fStMcGT9i2T//tSwYFlcyoRRDcDZ+TYHpH8azBBCyhpSeqw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script defer src="script.js"></script>
+  </head>
 
-    </p>
-    <input type="file" id="zipFileInput" accept=".zip" />
-    <button id="processButton">Process Zip File</button><br />
-    <span style="font-size:x-large"> deleteCount: <span id="deleteCount" style="color: red;">0</span></span>;
-    <span style="font-size:x-large">delete Image Lists: [<span id="deleteList" style="color: red;"> </span>]</span>
-    <hr />
-    <div id="msg1" style="display: none; font-size: large;">Processing zip file</div>
-    <div id="imageList"></div>
+  <body>
+    <h1 class="title">Manga Zip Tool</h1>
+    <div class="instruction" style="font-size: large">
+      <div>How to use?</div>
+      <ol>
+        <li>Choose a manga archive (.zip file).</li>
+        <li>
+          Click on pages you want to delete.
+        </li>
+        <li>
+          Click 'Process Zip File', you will get a new zip with only the pages
+          you want.
+        </li>
+      </ol>
+    </div>
+    <div class="operation">
+      <input
+        type="file"
+        id="zipFileInput"
+        accept=".zip"
+        title="Choose a manga archive."
+      />
+      <div
+        title="When processing the zip file, rename each image as 00.png, 01.png, ..., 99.png in the order displayed on the page."
+      >
+        <input type="checkbox" id="enableRenamingCheckbox" checked/>
+        <label for="enableRenamingCheckbox">Enable renaming</label>
+      </div>
+      <button
+        id="processButton"
+        class="btn"
+        title="Process the zip file and download it."
+      >
+        Process Zip File
+      </button>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.5.0/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <script src="script.js"></script>
-</body>
+    <div class="statistics hidden">
+      <div class=""># Total pages: <span class="total-count">0</span></div>
+      <div class=""># Deleted pages: <span class="delete-count">0</span></div>
+      <div class=""># Final pages: <span class="final-count">0</span></div>
+    </div>
 
+    <div class="loading-msg">Processing zip file</div>
+    <div class="image-list"></div>
+  </body>
 </html>
