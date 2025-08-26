@@ -40,6 +40,8 @@ echo "----------------------------------------"
 
 # Process each CDN link
 while IFS= read -r CDN_URL; do
+    echo $CDN_URL
+
     # Skip non-cdnjs links
     if [[ ! "$CDN_URL" =~ cdnjs\.cloudflare\.com ]]; then
         continue
