@@ -6,7 +6,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  check-cdn:
+  check-new-versions:
+    name: Check new versions
     runs-on: ubuntu-latest
     
     steps:
