@@ -1,0 +1,26 @@
+name: My Dependabot
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check-cdn:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+      
+    - name: Setup script
+      run: |
+        chmod +x check_cdn_versions.sh
+      
+    - name: Check CDN versions
+      run: |
+        for file in $(find . -name "*.html" -type f); do
+          echo "Checking: $file"
+          ./check_cdn_versions.sh "$file"
+          echo "----------------------------------------"
+        done
