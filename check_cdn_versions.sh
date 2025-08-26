@@ -20,12 +20,16 @@ TEMP_FILE=$(mktemp)
 echo "Analyzing CDN references in $HTML_FILE..."
 grep -o '<script[^>]*src="[^"]*"[^>]*>' "$HTML_FILE" | grep -o 'src="[^"]*"' | sed 's/src="//' | sed 's/"//' > "$TEMP_FILE"
 
+cat "$TEMP_FILE"
+
 # Check if any CDN references were found
 if [ ! -s "$TEMP_FILE" ]; then
     echo "No CDN references found"
     rm "$TEMP_FILE"
     exit 0
 fi
+
+
 
 # Counter
 UPDATE_AVAILABLE=0
