@@ -21,7 +21,6 @@ echo "Analyzing CDN references in $HTML_FILE..."
 awk '
 BEGIN { RS="</script>"; ORS=""; }
 {
-    # 查找script标签
     if (match($0, /<script[^>]*src=["'"'"']([^"'"'"']*)["'"'"']/, m)) {
         print m[1] "\n"
     }
