@@ -18,9 +18,14 @@ TEMP_FILE=$(mktemp)
 
 # Extract all script tag src attributes from the HTML file
 echo "Analyzing CDN references in $HTML_FILE..."
-grep -o '<script[^>]*src="[^"]*"[^>]*>' "$HTML_FILE" | grep -o 'src="[^"]*"' | sed 's/src="//' | sed 's/"//' > "$TEMP_FILE"
-
-cat "$TEMP_FILE"
+awk '
+BEGIN { RS="</script>"; ORS=""; }
+{
+    if (match($0, /<script[^>]*src=["'"'"']([^"'"'"']*)["'"'"']/, m)) {
+        print m[1] "\n"
+    }
+}
+' "$HTML_FILE" > "$TEMP_FILE"
 
 # Check if any CDN references were found
 if [ ! -s "$TEMP_FILE" ]; then
@@ -28,7 +33,6 @@ if [ ! -s "$TEMP_FILE" ]; then
     rm "$TEMP_FILE"
     exit 0
 fi
-
 
 
 # Counter
@@ -40,6 +44,7 @@ echo "----------------------------------------"
 
 # Process each CDN link
 while IFS= read -r CDN_URL; do
+
     # Skip non-cdnjs links
     if [[ ! "$CDN_URL" =~ cdnjs\.cloudflare\.com ]]; then
         continue
