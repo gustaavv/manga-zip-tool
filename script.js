@@ -30,6 +30,28 @@ function init() {
   imageListEl.innerHTML = "";
 }
 
+function initSortable() {
+  new Sortable(imageListEl, {
+    ghostClass: "sortable-ghost",
+    onEnd: e => {
+      if (e.oldIndex === e.newIndex) {
+        return;
+      }
+      const thumbnailEl = e.item;
+      thumbnailEl.classList.add("moved");
+      const newOrder = {};
+
+      [...e.to.children].forEach((div, i) => {
+        newOrder[div.dataset.filename] = i;
+      });
+
+      imageObjList.sort(
+        (o1, o2) => newOrder[o1.filename] - newOrder[o2.filename]
+      );
+    },
+  });
+}
+
 function handleFileSelect(event) {
   zipFile = event.target.files[0];
   if (!zipFile) {
@@ -57,6 +79,7 @@ function handleFileSelect(event) {
   };
 
   reader.readAsArrayBuffer(zipFile);
+  initSortable();
 }
 
 function renderStatistics() {

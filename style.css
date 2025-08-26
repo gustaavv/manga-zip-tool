@@ -29,8 +29,16 @@ body {
   border-bottom: black solid 1px;
 }
 
+.instruction strong {
+  font-size: 2.2rem;
+}
+
 .instruction ol {
   margin-left: 1.8rem;
+}
+
+.instruction .operations-allowed {
+  font-size: 1.6rem;
 }
 
 .operation {
@@ -98,11 +106,6 @@ body {
   box-shadow: 0 0 3rem rgba(0, 0, 0, 0.2);
 }
 
-.thumbnail.deleted {
-  border: 3px solid red;
-  box-shadow: 0 0 2rem rgba(255, 0, 0, 0.3);
-}
-
 .thumbnail.deleted::after {
   content: "deleted";
   text-transform: uppercase;
@@ -115,10 +118,27 @@ body {
   transform: translate(50%, -50%) rotate(45deg);
 }
 
+.thumbnail.moved::before {
+  content: "moved";
+  text-transform: uppercase;
+  font-size: 3.2rem;
+  color: green;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  top: 2%;
+  right: 50%;
+  transform: translateX(50%);
+}
+
 .thumbnail img {
   max-width: 20rem;
   max-height: 20rem;
   object-fit: cover;
+}
+
+.thumbnail.sortable-ghost {
+  border: 3px dashed green;
+  box-shadow: 0 0 2rem rgba(0, 128, 0, 0.3);
 }
 
 .loading-msg {

@@ -21,17 +21,30 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.6/Sortable.min.js"
+      integrity="sha512-csIng5zcB+XpulRUa+ev1zKo7zRNGpEaVfNB9On1no9KYTEY/rLGAEEpvgdw6nim1WdTuihZY1eqZ31K7/fZjw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+
     <script defer src="script.js"></script>
   </head>
 
   <body>
     <h1 class="title">Manga Zip Tool</h1>
     <div class="instruction" style="font-size: large">
-      <div>How to use?</div>
+      <div><strong>How to use?</strong></div>
       <ol>
         <li>Choose a manga archive (.zip file).</li>
         <li>
-          Click on pages you want to delete.
+          <div>Perform the following operations:</div>
+          <ul class="operations-allowed">
+            <li>Click on the pages you want to delete.</li>
+            <li>Drag and drop the pages you want to change order.</li>
+          </ul>
         </li>
         <li>
           Click 'Process Zip File', you will get a new zip with only the pages
@@ -49,7 +62,7 @@
       <div
         title="When processing the zip file, rename each image as 00.png, 01.png, ..., 99.png in the order displayed on the page."
       >
-        <input type="checkbox" id="enableRenamingCheckbox" checked/>
+        <input type="checkbox" id="enableRenamingCheckbox" checked />
         <label for="enableRenamingCheckbox">Enable renaming</label>
       </div>
       <button
