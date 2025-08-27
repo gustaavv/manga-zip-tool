@@ -39,6 +39,7 @@ jobs:
 
       - name: make artifact
         run: |
+          mkdir target
           mv *.html *.js *.css target/
 
       - name: Upload artifact
