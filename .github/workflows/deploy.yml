@@ -6,9 +6,9 @@ on:
     branches:
       - master
     paths:
-      - *.js
-      - *.html
-      - *.css
+      - ./*.js
+      - ./*.html
+      - ./*.css
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
